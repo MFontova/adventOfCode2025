@@ -1,11 +1,12 @@
-import {getInput} from "../file_reader"
+import { getInput } from "../file_reader"
 
 function rotations() {
-  const input = getInput('01', true)
+  const input = getInput('01', false)
 
   const lines = input.split('\n').filter(line => line.trim() !== '')
 
   let currentPosition = 50
+  let zeroes = 0
 
   const orders: {direction: string, value: number}[] = []
 
@@ -13,31 +14,33 @@ function rotations() {
     orders.push({direction: line.substring(0,1), value: Number(line.substring(1))})
   })
 
-  let zeroes = 0
+  console.log('orders', orders)
 
-  orders.forEach(o => {
-    let position = 0
+  orders.forEach(order => {
+    let remain = order.value
 
-    if(o.direction === 'L') {
-      position = currentPosition - o.value
-      if(o.value < 100) {
-        zeroes += o.value/100
+    if(order.direction === 'L') {
+      while (remain !== 0) {
+        let nextPosition = (((currentPosition - 1) % 100) + 100) % 100
+        if(nextPosition == 0) {
+          zeroes++
+        }
+        currentPosition--
+        remain--
       }
     }
-    if(o.direction === 'R') {
-      position = currentPosition + o.value
-      if(o.value > 100) {
-        zeroes += o.value/100
+    if(order.direction === 'R') {
+      while (remain !== 0) {
+        let nextPosition = (((currentPosition + 1) % 100) + 100) % 100
+        if(nextPosition == 0) {
+          zeroes++
+        }
+        currentPosition++
+        remain--
       }
     }
-
-    currentPosition = ((position % 100) + 100) % 100
-
-    if(currentPosition === 0) {
-      zeroes += 1
-    }
+    console.log('zeroes', zeroes)
   })
-  console.log(Math.trunc(zeroes))
 }
 
 rotations()
