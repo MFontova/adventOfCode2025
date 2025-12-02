@@ -7,7 +7,6 @@ function invalidIds() {
   
   let sum = 0
 
-
   lines.forEach(l => {
     const [start, end] = l.split('-').map(n => Number(n))
     console.log(start, end)
@@ -17,7 +16,6 @@ function invalidIds() {
 
       const idsSet = new Set()
 
-      // console.log(strLength)
       for (let index = strLength; index >= 1; index--) {
         if(strLength % index === 0) {
           const patternString = `.{${index}}`
