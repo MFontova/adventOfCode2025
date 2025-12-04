@@ -1,7 +1,7 @@
 import { getInput } from "../file_reader"
 
 function forklifts() {
-  const input = getInput('04', false)
+  const input = getInput('04', true)
 
   const lines = input.split('\r\n')
 
