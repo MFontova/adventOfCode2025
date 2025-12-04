@@ -26,6 +26,7 @@ function invalidIds() {
               const joined = result.join('')
               idsSet.add(joined)
               console.log(idsSet)
+              break
             }
           }
         }
