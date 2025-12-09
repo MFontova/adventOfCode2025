@@ -20,26 +20,36 @@ function connect() {
   
   let circuits: Array<Set<number>> = Array.from({length: input.length}, (_,i) => new Set([i]))
 
-  const maxCircuits = 1000
-  for (let index = 0; index < maxCircuits; index++) {
+  const lastIncorporation = []
+  for (let index = 0; index < filteredEdges.length; index++) {
     const { distance, i, j } = filteredEdges[index]
     
     const circuit_i_index = circuits.findIndex(c => c.has(i))
     const circuit_j_index = circuits.findIndex(c => c.has(j))
 
+    // console.log(i, j)
+
     if(circuit_i_index !== circuit_j_index) {
       circuits[circuit_i_index] = new Set([...circuits[circuit_i_index], ...circuits[circuit_j_index]])
       circuits[circuit_j_index] = new Set()
     }
+
+    if(circuits.some(c => c.size === input.length)) {
+      lastIncorporation.push(i, j)
+      break
+    }
+
+    // console.log(circuits)
+    // console.log('------------------------------------')
   }
 
+  console.log('input.length', input.length)
+  // console.log(circuits)
   circuits.sort((a, b) => b.size - a.size)
+  // console.log(circuits[0])
+  console.log(lastIncorporation)
 
-  const threeLargest = circuits.slice(0, 3)
-
-  console.log(threeLargest.reduce((acc, curr) => {
-    return acc * curr.size
-  }, 1))
+  console.log(input[lastIncorporation[0]][0] * input[lastIncorporation[1]][0])
 
   return
 }
