@@ -17,13 +17,11 @@ function moveReno(board: Board, moves: Moves): Result {
 
   let startPosition = [0, 0]
   for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const element = boardArray[row][col];
-      if(element === '@') {
-        startPosition = [row, col]
-        break
-      }
-    }    
+    const col = boardArray[row].indexOf('@')
+    if(col !== -1) {
+      startPosition = [row, col]
+      break
+    }
   }
 
   let result: Result = 'fail'
@@ -32,29 +30,15 @@ function moveReno(board: Board, moves: Moves): Result {
   for(let m of moves.split('')) {
     const move = movements[m as keyof typeof movements]
     newPosition = [newPosition[0] + move[0], newPosition[1] + move[1]]
-  
-    if(!insideLimits(newPosition)) {
-      if(result !== 'success') {
-        result = 'crash'
-      }
-      break
-    }
 
+    const [row, col] = newPosition
+    if(!(row >= 0 && row < rows && col >= 0 && col < cols)) {
+      return 'crash'
+    }
+    
     const nextElement = boardArray[newPosition[0]][newPosition[1]]
-    if(nextElement === '*') {
-      result = 'success'
-    }
-    if(nextElement === '#') {
-      if(result !== 'success') {
-        result = 'crash'
-        break
-      }
-    }
-  }
-
-  function insideLimits(position: number[]) {
-    const [row, col] = position
-    return row >= 0 && row < rows && col >= 0 && col < cols
+    if(nextElement === '*') return 'success'
+    if(nextElement === '#') return 'crash'
   }
 
   return result
@@ -70,7 +54,7 @@ const board = `
 // console.log(moveReno(board, 'D'))
 // ➞ 'fail' -> se mueve pero no recoge nada
 
-// console.log(moveReno(board, 'U'))
+console.log(moveReno(board, 'U'))
 // ➞ 'success' -> recoge algo (*) justo encima
 
 // console.log(moveReno(board, 'RU'))
@@ -82,7 +66,7 @@ const board = `
 // console.log(moveReno(board, 'DD'))
 // // ➞ 'crash' -> se choca con la parte de abajo del tablero
 
-console.log(moveReno(board, 'UUU'))
+// console.log(moveReno(board, 'UUU'))
 // // ➞ 'success' -> recoge algo del suelo (*) y luego se choca por arriba
 
 // console.log(moveReno(board, 'RR'))
