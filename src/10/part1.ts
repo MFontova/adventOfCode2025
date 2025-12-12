@@ -1,7 +1,7 @@
 import { getInput } from "../file_reader"
 
 function pressButtons() {
-  const rawInput = getInput('10', true)
+  const rawInput = getInput('10', false)
 
   const input = rawInput.split('\r\n').map(row => row.split(' '))
 
@@ -14,57 +14,46 @@ function pressButtons() {
     return [cleanLightDiagram, buttonWiring, joltage]
   })
 
-  // console.log(cleanInput)
-
+  let result = 0
   for(let line of cleanInput) {
-    // console.log('line', line)
+    let min = Number.POSITIVE_INFINITY
     const lightDiagram: string[] = line[0] as string[]
     const buttonsWiring: string[] = line[1] as string[]
     const joltage: string = line[2] as string
 
-    let lightDiagramResult = Array.from({length: lightDiagram.length}, (i) => '.')
+    const buttonCombinations = getPowerSet(buttonsWiring)
 
-    // const lightsOff = Array.from({length: lightDiagram.length}, (i) => '.')
-
-    buttonsWiring.forEach(b => {
-      // lightDiagramResult = press(lightDiagramResult, b)
+    buttonCombinations.forEach(combination => {
+      let lightDiagramResult = Array.from({length: lightDiagram.length}, (i) => '.')
+      combination.forEach(button => {
+        lightDiagramResult = press(lightDiagramResult, button)
+      })
+      if(lightDiagramResult.join('') === lightDiagram.join('')) {
+        min = Math.min(min, combination.length)
+      }
     })
 
-  }
+    result += min
 
+  }
+  console.log('result', result)
 }
 
-let lightDiagram = [ '.', '.', '.', '.' ]
-// const buttons = ['(3)', '(1,3)', '(2)', '(2,3)', '(0,2)', '(0,1)']
-const buttons = ['(3)', '(1,3)', '(2)']
+pressButtons()
 
-// buttons.forEach(b => {
-//   lightDiagram = press(lightDiagram, b)
-// })
 
 function press(lightDiagram: string[], buttons: string) {
-  // console.log('inp', lightDiagram)
-  // console.log('buttons', buttons)
   const buttonsArray = buttons.substring(1, buttons.length - 1).split(',')
-  // let result = Array.from({length: lightDiagram.length}, (i) => '.')
   let result = lightDiagram
 
 
   buttonsArray.forEach(b => {
     let button = Number(b)
-    // console.log(button)
-    // console.log('status', result[button])
-    
     result[button] = result[button] === '.' ? '#' : '.'
   })
 
-  // console.log('res', result)
-  // console.log('---------------------')
   return result
 }
-
-// pressButtons()
-
 
 function getPowerSet(set: any[]) {
   const n = set.length;
@@ -89,26 +78,3 @@ function getPowerSet(set: any[]) {
   }
   return powerSet;
 }
-
-// [.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
-
-const result: string[][] = getPowerSet(['(3)', '(1,3)', '(2)', '(2,3)', '(0,2)', '(0,1)'])
-
-
-let min = Number.POSITIVE_INFINITY
-result.forEach(r => {
-  let lightDiagram = ['.','.','.','.']
-  let result: string[] = []
-  r.forEach(i => {
-    result = press(lightDiagram, i)
-    lightDiagram = result
-    console.log('result', result.join(''))
-  })
-  if(result.join('') == '.##.') {
-    console.log('inside')
-    min = Math.min(min, r.length)
-    console.log(r)
-  }
-})
-
-console.log('min', min)

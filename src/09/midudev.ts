@@ -1,8 +1,8 @@
 type Board = string
 type Moves = string
-type Result = 'fail' | 'crash' | 'success'
+type Result_ = 'fail' | 'crash' | 'success'
 
-function moveReno(board: Board, moves: Moves): Result {
+function moveReno(board: Board, moves: Moves): Result_ {
   const movements = {
     L: [0, -1],
     R: [0, 1],
@@ -24,7 +24,7 @@ function moveReno(board: Board, moves: Moves): Result {
     }
   }
 
-  let result: Result = 'fail'
+  let result: Result_ = 'fail'
 
   let newPosition = [startPosition[0], startPosition[1]]
   for(let m of moves.split('')) {
