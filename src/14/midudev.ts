@@ -6,7 +6,6 @@ function findGiftPath(workshop: Workshop, gift: Gift): Path {
   
   function recursive(currentLevel: Workshop, gift: Gift, path: Path): Path {
     for (const key in currentLevel) {
-      if(!currentLevel.hasOwnProperty(key)) continue;
       const value = currentLevel[key]
 
       if(value === gift) {
