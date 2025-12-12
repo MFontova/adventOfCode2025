@@ -3,34 +3,59 @@ type Workshop = Record<string, any>
 type Path = string[]
 
 function findGiftPath(workshop: Workshop, gift: Gift): Path {
+  
+  function recursive(currentLevel: Workshop, gift: Gift, path: Path): Path {
+    for (const key in currentLevel) {
+      if(!currentLevel.hasOwnProperty(key)) continue;
+      const value = currentLevel[key]
 
-  let result: Path = []
+      if(value === gift) {
+        return [...path, key]
+      }
+      if(typeof value === 'object') {
+        const newPath = [...path, key]
+        const resultPath = recursive(value, gift, newPath)
 
-  Object.keys(workshop).forEach(k => {
-    console.log('k', k)
-    if(typeof k === 'string' && workshop[k].toString() === gift.toString()) {
-      result = [k]
-    } else if(typeof workshop[k] !== 'string') {
-      Object.keys(workshop[k]).forEach(subK => {
-        console.log('subK', subK)
-        if(typeof subK === 'string' && workshop[k][subK].toString() === gift.toString()) {
-          result = [k, subK]
-        } else if(typeof workshop[k][subK] !== 'string') {
-          Object.keys(workshop[k][subK]).forEach(subSubK => {
-            console.log('subSubK', subSubK)
-            if(typeof subSubK === 'string' && workshop[k][subK][subSubK].toString() == gift.toString()) {
-              console.log('found')
-              result = [k, subK, subSubK]
-            }
-          })
+        if(resultPath.length > 0) {
+          return resultPath
         }
-      })
+      }
     }
-  })
+    return []
+  }
 
-  console.log(result)
-  return result
+  return recursive(workshop, gift, [])
 }
+
+// function findGiftPath(workshop: Workshop, gift: Gift): Path {
+
+//   let result: Path = []
+
+//   Object.keys(workshop).forEach(k => {
+//     console.log('k', k)
+//     if(typeof k === 'string' && workshop[k].toString() === gift.toString()) {
+//       result = [k]
+//     } else if(typeof workshop[k] !== 'string') {
+//       Object.keys(workshop[k]).forEach(subK => {
+//         console.log('subK', subK)
+//         if(typeof subK === 'string' && workshop[k][subK].toString() === gift.toString()) {
+//           result = [k, subK]
+//         } else if(typeof workshop[k][subK] !== 'string') {
+//           Object.keys(workshop[k][subK]).forEach(subSubK => {
+//             console.log('subSubK', subSubK)
+//             if(typeof subSubK === 'string' && workshop[k][subK][subSubK].toString() == gift.toString()) {
+//               console.log('found')
+//               result = [k, subK, subSubK]
+//             }
+//           })
+//         }
+//       })
+//     }
+//   })
+
+//   console.log(result)
+//   return result
+// }
 
 const workshop = {
   ok: true,
@@ -42,7 +67,7 @@ const workshop = {
   }
 }
 
-findGiftPath(workshop, false)
+console.log(findGiftPath(workshop, false))
 
 // const workshop = {
 //   storage: {
