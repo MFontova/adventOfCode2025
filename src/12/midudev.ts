@@ -1,7 +1,7 @@
 function elfBattle(elf1: string, elf2: string): number {
   let elf1Life = 3
   let elf2Life = 3
-  let result = 0
+  let result: number
   
   const combinations = {
     AA: [-1,-1],
@@ -15,13 +15,11 @@ function elfBattle(elf1: string, elf2: string): number {
     FF: [-2,-2],
   }
 
-  for (let i = 0; i < elf1.length; i++) {
+  for (let i = 0; i < Math.min(elf1.length, elf2.length); i++) {
     const elf1Movement = elf1[i];
     const elf2Movement = elf2[i];
 
     const movementString = elf1Movement + elf2Movement
-
-    //AA, AB, AF, BA, BB, BF, FA, FB, FF
 
     const [damageElf1, damageElf2] = combinations[movementString as keyof typeof combinations]
 
@@ -37,9 +35,10 @@ function elfBattle(elf1: string, elf2: string): number {
     result = 1
   } else if(elf2Life > elf1Life) {
     result = 2
+  } else {
+    result = 0
   }
 
-  console.log('result', result)
   return result
 }
 
