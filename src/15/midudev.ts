@@ -4,45 +4,48 @@ type SortBy = string
 function drawTable(data: Data, sortBy: SortBy): string {
   let table = ''
 
-  const keys: Array<string | number> = Object.keys(data[0])
-
-  console.log(keys)
-
   const sortedData = data.sort((a, b) => {
-    return a[sortBy] > b[sortBy] ? 1 : -1
+    if(a[sortBy] > b[sortBy]) return 1
+    if(a[sortBy] < b[sortBy]) return -1
+    return 0
   })
 
-  console.log(sortedData)
+  const keys: Array<string> = Object.keys(data[0])
+  
+  let headerBase = ''
+  let headerBody = ''
+  let tableBody = ''
 
-  let a: Array<string> = []
-  let b: Array<string> = []
+  let maxLenghts: number[] = []
 
-  sortedData.forEach(d => {
-
-    a.push(d[keys[0]].toString())
-    b.push(d[keys[1]].toString())
+  keys.forEach(key => {
+    const maxLenght = Math.max(...sortedData.map(e => e[key]).map(v => v.toString().length))
+    maxLenghts.push(maxLenght)
   })
 
-  const largestA: number = Math.max(...(a.map(i => i.length)))
-  const largestB: number = Math.max(...(b.map(i => i.length)))
+  sortedData.forEach((data, index) => {
+    keys.forEach((key, keyIndex) => {
+      const maxLenght = maxLenghts[keyIndex]
+      if(index === 0) {
+        headerBase += `+${'-'.repeat(maxLenght + 2)}`
+        headerBody += `| ${String.fromCharCode(65 + keyIndex).padEnd(maxLenght + 1)}`
+      }
+      tableBody += `| ${data[key]}`.padEnd(maxLenght + 3)
+    })
+    tableBody += '|\n'
+  })
 
-  const edge = '+' + '-'.repeat(largestA + 2) + '+' + '-'.repeat(largestB + 2) + '+'
+  headerBase += '+'
+  headerBody += '|'
 
-  table += edge + '\n'
-  table += '|' + ' A'.padEnd(largestA + 2) + '|' + ' B'.padEnd(largestB + 2) + '|' + '\n'
-  table += edge + '\n'
 
-  for (let i = 0; i < a.length; i++) {
-    const aElement = a[i];
-    const bElement = b[i];
-
-    table += '|' + ` ${aElement}`.padEnd(largestA + 2) + '|' + ` ${bElement}`.padEnd(largestB + 2) + '|' + '\n'
-  }
-
-  table += edge
+  table += headerBase + '\n'
+  table += headerBody + '\n'
+  table += headerBase + '\n'
+  table += tableBody
+  table += headerBase
 
   console.log(table)
-
   return table
 }
 
