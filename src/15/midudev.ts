@@ -3,50 +3,49 @@ type SortBy = string
 
 function drawTable(data: Data, sortBy: SortBy): string {
   let table = ''
+  let tableLines: string[] = []
 
-  const sortedData = data.sort((a, b) => {
-    if(a[sortBy] > b[sortBy]) return 1
-    if(a[sortBy] < b[sortBy]) return -1
+  let sortedData = [...data]
+  sortedData = sortedData.sort((a, b) => {
+    if (a[sortBy] > b[sortBy]) return 1
+    if (a[sortBy] < b[sortBy]) return -1
     return 0
   })
 
   const keys: Array<string> = Object.keys(data[0])
-  
+
   let headerBase = ''
   let headerBody = ''
-  let tableBody = ''
+  let tableBody: string[] = []
 
-  let maxLenghts: number[] = []
+  let maxLengths: number[] = []
 
-  keys.forEach(key => {
-    const maxLenght = Math.max(...sortedData.map(e => e[key]).map(v => v.toString().length))
-    maxLenghts.push(maxLenght)
+  keys.forEach((key, keyIndex) => {
+    const maxLength = Math.max(...sortedData.map(e => e[key]).map(v => v.toString().length))
+    maxLengths.push(maxLength)
+    headerBase += `+${'-'.repeat(maxLength + 2)}`
+    headerBody += `| ${String.fromCharCode(65 + keyIndex).padEnd(maxLength + 1)}`
   })
 
   sortedData.forEach((data, index) => {
+    let tbLine = ''
     keys.forEach((key, keyIndex) => {
-      const maxLenght = maxLenghts[keyIndex]
-      if(index === 0) {
-        headerBase += `+${'-'.repeat(maxLenght + 2)}`
-        headerBody += `| ${String.fromCharCode(65 + keyIndex).padEnd(maxLenght + 1)}`
-      }
-      tableBody += `| ${data[key]}`.padEnd(maxLenght + 3)
+      const maxLenght = maxLengths[keyIndex]
+      // if (index === 0) {
+      //   headerBase += `+${'-'.repeat(maxLenght + 2)}`
+      //   headerBody += `| ${String.fromCharCode(65 + keyIndex).padEnd(maxLenght + 1)}`
+      // }
+      tbLine += `| ${data[key]}`.padEnd(maxLenght + 3)
     })
-    tableBody += '|\n'
+    tableBody.push(tbLine + '|')
   })
 
   headerBase += '+'
   headerBody += '|'
+  tableLines = [headerBase, headerBody, headerBase, ...tableBody, headerBase]
 
-
-  table += headerBase + '\n'
-  table += headerBody + '\n'
-  table += headerBase + '\n'
-  table += tableBody
-  table += headerBase
-
-  console.log(table)
-  return table
+  console.log(tableLines.join('\n'))
+  return tableLines.join('\n')
 }
 
 drawTable(

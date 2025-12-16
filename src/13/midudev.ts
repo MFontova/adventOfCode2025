@@ -1,7 +1,7 @@
 type Factory = string[]
-type Result = 'completed' | 'broken' | 'loop'
+type ResultFactory = 'completed' | 'broken' | 'loop'
       
-function runFactory(factory: Factory): Result {
+function runFactory(factory: Factory): ResultFactory {
   let position = [0, 0]
 
   const visited: Set<string> = new Set()
