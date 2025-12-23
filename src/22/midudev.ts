@@ -12,15 +12,9 @@ function canEscape(maze: string[][]): boolean {
   let S
 
   // Find S
-  for (let i = 0; i < maze.length; i++) {
-    for (let j = 0; j < maze[i].length; j++) {
-      const element = maze[i][j];
-      if(element === 'S') {
-        S = [i, j]
-        break
-      }
-    }
-  }
+
+  let SRow = maze.findIndex(i => i.includes('S'))
+  S = [SRow, maze[SRow].indexOf('S')]
 
   const visited: Set<string> = new Set()
   const stack: number[][] = [S!]
