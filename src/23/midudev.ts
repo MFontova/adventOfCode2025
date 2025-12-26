@@ -11,52 +11,36 @@ function minStepsToDeliver(map: string[][]): number {
 
   let steps = 0
 
-  let S
+  const distancesToGs: number[] = []
+
+  let S: number[]
   // Find S
   let SRow = map.findIndex(i => i.includes('S'))
   S = [SRow, map[SRow].indexOf('S')]
 
-  let giftsPositions: number[][] = []
-  for (let i = 0; i < map.length; i++) {
-    for (let j = 0; j < map[i].length; j++) {
-      const element = map[i][j];
-      if(element === 'G') {
-        giftsPositions.push([i, j])
+  const queue = [[...S, 0]]
+  const visited = new Set()
+
+  while (queue.length > 0) {
+    const [x, y, w] = queue.shift()!
+
+    if(map[x][y] === 'G') {
+      distancesToGs.push(w)
+    }
+
+    for(let direction of directions) {
+      const newPosition = [x - direction[0], y - direction[1], w + 1]
+      if(isInside(newPosition) && map[newPosition[0]][newPosition[1]] !== '#' && !visited.has(`${newPosition[0]}-${newPosition[1]}`)) {
+        visited.add(`${newPosition[0]}-${newPosition[1]}`)
+        queue.push(newPosition)
       }
     }
   }
 
-  for(let giftPos of giftsPositions) {
-    const queue: number[][] = [[...giftPos, 0]]
-    let head = 0
-    const visited: Set<string> = new Set()
-
-    let foundS = false
-
-    while (head < queue.length) {
-      let [x, y, w] = queue[head++]
-
-      if(map[x][y] === 'S') {
-        steps += w
-        foundS = true
-        break
-      }
-
-      for (let direction of directions) {
-        let next = [x + direction[0], y + direction[1]]
-
-        if(isInside(next) && !visited.has(`${next[0]}-${next[1]}`)) {
-          const nextChar = map[next[0]][next[1]]
-          if(nextChar !== '#') {
-            visited.add(`${next[0]}-${next[1]}`)
-            queue.push([...next, w + 1])
-          }
-        }
-      }
-    }
-
-    if(!foundS) return -1
+  if(distancesToGs.length === 0) {
+    return -1
   }
+  steps = distancesToGs.reduce((prev, curr) => prev + curr)
 
   return steps
 

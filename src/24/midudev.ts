@@ -10,14 +10,22 @@ function isTreesSynchronized(
     tree2: { value: string; left?: any; right?: any } | undefined
   ): boolean {
     console.log(tree1?.value, tree2?.value)
-  
-    if(tree1!.value !== tree2!.value) {
+
+    if(tree1 === undefined && tree2 === undefined) {
+      return true
+    } else if(tree1 === undefined || tree2 === undefined) {
       return false
     }
   
-    if(tree1!.left !== undefined && tree2!.right !== undefined && tree1!.right !== undefined && tree2!.left !== undefined) {
+    if(tree1!.value !== tree2!.value) {
+      return false
+    } else {
       return recursive(tree1!.left, tree2!.right) && recursive(tree1!.right, tree2!.left)
     }
+  
+    // if(tree1!.left !== undefined && tree2!.right !== undefined && tree1!.right !== undefined && tree2!.left !== undefined) {
+    //   return recursive(tree1!.left, tree2!.right) && recursive(tree1!.right, tree2!.left)
+    // }
 
     return true
   }
